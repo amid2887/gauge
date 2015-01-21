@@ -1,5 +1,5 @@
 {
-  "name": "Gauge Example",
+  "name": "gauge-example",
   "version": "0.0.1",
   "dependencies": {
     "jquery": null,
@@ -8,7 +8,7 @@
   "homepage": "https://github.com/amid2887/gauge",
   "main": "app/scripts/gauge/gauge.js",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",
