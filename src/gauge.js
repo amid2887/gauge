@@ -1,4 +1,4 @@
-define(function ($) {
+;(function (window, document) {
 
     var defaults = {
         width: 440,
@@ -54,36 +54,38 @@ define(function ($) {
             if (typeof obj !== 'object') return;
 
             for (key in obj) {
-                if (!(key in obj)) continue;
+                if (obj.hasOwnProperty(key)) {
+                    if (!(key in obj)) continue;
 
-                src = target[key];
-                val = obj[key];
+                    src = target[key];
+                    val = obj[key];
 
-                if (val === target) continue;
+                    if (val === target) continue;
 
-                if (typeof val !== 'object' || val === null) {
-                    target[key] = val;
-                    continue;
-                } else if (val instanceof Date) {
-                    target[key] = new Date(val.getTime());
-                    continue;
-                } else if (val instanceof RegExp) {
-                    target[key] = new RegExp(val);
-                    continue;
-                }
+                    if (typeof val !== 'object' || val === null) {
+                        target[key] = val;
+                        continue;
+                    } else if (val instanceof Date) {
+                        target[key] = new Date(val.getTime());
+                        continue;
+                    } else if (val instanceof RegExp) {
+                        target[key] = new RegExp(val);
+                        continue;
+                    }
 
-                if (typeof src !== 'object' || src === null) {
-                    clone = (Array.isArray(val)) ? [] : {};
+                    if (typeof src !== 'object' || src === null) {
+                        clone = (Array.isArray(val)) ? [] : {};
+                        target[key] = extend(clone, val);
+                        continue;
+                    }
+
+                    if (Array.isArray(val)) {
+                        clone = (Array.isArray(src)) ? val : [];
+                    } else {
+                        clone = (!Array.isArray(src)) ? src : {};
+                    }
                     target[key] = extend(clone, val);
-                    continue;
                 }
-
-                if (Array.isArray(val)) {
-                    clone = (Array.isArray(src)) ? val : [];
-                } else {
-                    clone = (!Array.isArray(src)) ? src : {};
-                }
-                target[key] = extend(clone, val);
             }
         });
 
@@ -105,31 +107,31 @@ define(function ($) {
         drawPointer(context, options);
     }
 
-    function drawBar (context, options) {
+    function drawBar(context, options) {
         var arc = options.arc,
             angles = arc.angles;
 
         for (var i = 0, l = angles.length; i < l; i++) {
             var startAngle = getRadians(angles[i]),
-                endAngle = getRadians(angles[i+1]),
+                endAngle = getRadians(angles[i + 1]),
                 stroke = arc.strokeStyles[i];
 
             if (typeof startAngle !== 'undefined' && typeof endAngle !== 'undefined') {
                 context.save();
                 context.beginPath();
-                    context.arc(options.centerX, options.centerY, arc.radius, startAngle, endAngle, false);
-                    if (typeof stroke !== 'undefined') {
-                        context.lineWidth = arc.lineWidth;
-                        context.strokeStyle = stroke;
-                    }
-                    context.stroke();
+                context.arc(options.centerX, options.centerY, arc.radius, startAngle, endAngle, false);
+                if (typeof stroke !== 'undefined') {
+                    context.lineWidth = arc.lineWidth;
+                    context.strokeStyle = stroke;
+                }
+                context.stroke();
                 context.closePath();
                 context.restore();
             }
         }
     }
 
-    function drawHashes (context, options) {
+    function drawHashes(context, options) {
         var hashes = options.hashes,
             values = hashes.values,
             angles = options.arc.angles,
@@ -171,32 +173,32 @@ define(function ($) {
         context.restore();
     }
 
-    function drawNeedle (context, options) {
+    function drawNeedle(context, options) {
         var needle = options.needle,
             value = Math.min(Math.max(options.value, options.arc.angles[0]), options.arc.angles[options.arc.angles.length - 1]);
 
         context.save();
-            context.translate(options.centerX, options.centerY);
-            context.rotate(getRadians(value));
-            context.beginPath();
-                context.moveTo(0, -1 * needle.width);
-                context.lineTo(needle.radius, 0);
-                context.lineTo(0, needle.width);
-                context.fillStyle = needle.fillStyle;
-                context.fill();
-            context.closePath();
+        context.translate(options.centerX, options.centerY);
+        context.rotate(getRadians(value));
+        context.beginPath();
+        context.moveTo(0, -1 * needle.width);
+        context.lineTo(needle.radius, 0);
+        context.lineTo(0, needle.width);
+        context.fillStyle = needle.fillStyle;
+        context.fill();
+        context.closePath();
         context.restore();
     }
 
-    function drawPointer (context, options) {
+    function drawPointer(context, options) {
         var pointer = options.pointer;
 
         context.save();
-            context.beginPath();
-                context.arc(options.centerX, options.centerY, pointer.radius, 0, 2 * Math.PI, false);
-                context.fillStyle = pointer.fillStyle;
-                context.fill();
-            context.closePath();
+        context.beginPath();
+        context.arc(options.centerX, options.centerY, pointer.radius, 0, 2 * Math.PI, false);
+        context.fillStyle = pointer.fillStyle;
+        context.fill();
+        context.closePath();
         context.restore();
     }
 
@@ -235,6 +237,6 @@ define(function ($) {
         this.canvas.parentNode.removeChild(this.canvas);
     };
 
-    return Gauge;
+    window.Gauge = Gauge;
 
-});
+})(window, window.document);
