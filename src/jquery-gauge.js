@@ -237,7 +237,7 @@
         this.canvas.parentNode.removeChild(this.canvas);
     };
 
-    $.fn['gauge'] = function (options) {
+    $.fn.gauge = function (options) {
         this.each(function () {
             if (!$.data(this, 'gauge')) {
                 $.data(this, 'gauge', new Gauge(this, options));
